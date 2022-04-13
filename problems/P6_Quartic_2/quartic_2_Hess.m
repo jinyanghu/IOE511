@@ -10,6 +10,6 @@ Q = [5 1 0 0.5;
 sigma = 1e4;
 
 % compute function value
-H = ones(max(size(x)),1) + sigma*Q;
+H = ones(max(size(x)),1) + 2*sigma*(Q*x)*(x'*Q) + sigma*(x'*Q*x)*Q;
 end
 

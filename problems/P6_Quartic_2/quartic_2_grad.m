@@ -10,6 +10,6 @@ Q = [5 1 0 0.5;
 sigma = 1e4;
 
 % compute function value
-g = x + sigma*Q*x;
+g = x + sigma*(x'*Q*x)*Q*x;
 end
 
