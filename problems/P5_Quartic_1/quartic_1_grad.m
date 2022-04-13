@@ -9,5 +9,5 @@ Q = [5 1 0 0.5;
 sigma = 1e-4;
 
 % compute function value
-g = x + 0.5*sigma*Q*x;
+g = x + sigma*Q*x;
 end
