@@ -1,0 +1,14 @@
+function [H] = quartic_1_Hess(x)
+%UNTITLED11 Summary of this function goes here
+%   Detailed explanation goes here
+Q = [5 1 0 0.5;
+     1 4 0.5 0;
+     0 0.5 3 0;
+     0.5 0 0 2];
+ 
+% Set sigma value
+sigma = 1e-4;
+
+% compute function value
+H = ones(max(size(x)),1) + sigma*Q;
+end
