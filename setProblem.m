@@ -122,27 +122,65 @@ end
 % set function handles according the the selected problem
 switch problem.name
 
-    case 'Function2'
-        problem.compute_f = @fun2_func;
-        problem.compute_g = @fun2_g;
-        problem.compute_H = @fun2_H;
+    case 'Problem1'
+        problem.compute_f = @quad_10_10_func;
+        problem.compute_g = @quad_10_10_grad;
+        problem.compute_H = @quad_10_10_Hess;
 
-    case 'Function3'
-        problem.compute_f = @fun3_func;
-        problem.compute_g = @fun3_g;
-        problem.compute_H = @fun3_H;
+    case 'Problem2'
+        problem.compute_f = @quad_10_1000_func;
+        problem.compute_g = @quad_10_1000_grad;
+        problem.compute_H = @quad_10_1000_Hess;
 
-    case 'Rosenbrock'
+    case 'Problem3'
+        problem.compute_f = @quad_1000_10_func;
+        problem.compute_g = @quad_1000_10_grad;
+        problem.compute_H = @quad_1000_10_Hess;
+
+    case 'Problem4'
+        problem.compute_f = @quad_1000_1000_func;
+        problem.compute_g = @quad_1000_1000_grad;
+        problem.compute_H = @quad_1000_1000_Hess;        
+
+    case 'Problem5'
+        problem.compute_f = @quartic_1_func;
+        problem.compute_g = @quartic_1_grad;
+        problem.compute_H = @quartic_1_Hess;           
+
+    case 'Problem6'
+        problem.compute_f = @quartic_2_func;
+        problem.compute_g = @quartic_2_grad;
+        problem.compute_H = @quartic_2_Hess;         
+
+    case 'Problem7'    
+        problem.compute_f = @rosenbrock_2_func;
+        problem.compute_g = @rosenbrock_2_grad;
+        problem.compute_H = @rosenbrock_2_Hess;            
+
+    case 'Problem8'    
+        problem.compute_f = @rosenbrock_100_func;
+        problem.compute_g = @rosenbrock_100_grad;
+        problem.compute_H = @rosenbrock_100_Hess;  
+ 
+    case 'Problem9'    
+        problem.compute_f = @datafit_2_func;
+        problem.compute_g = @datafit_2_grad;
+        problem.compute_H = @datafit_2_Hess;
         
-        problem.compute_f = @rosen_func;
-        problem.compute_g = @rosen_g;
-        problem.compute_H = @rosen_H;
+    case 'Problem10'
+        problem.compute_f = @exponential_10_func;
+        problem.compute_g = @exponential_10_grad;
+        problem.compute_H = @exponential_10_Hess;
     
-    case 'Quadratic2'
-        
-        problem.compute_f = @quadratic_f;
-        problem.compute_g = @quadratic_g;
-        problem.compute_H = @quadratic_H;
+    case 'Problem11'
+        problem.compute_f = @exponential_1000_func;
+        problem.compute_g = @exponential_1000_grad;
+        problem.compute_H = @exponential_1000_Hess; 
+    
+    case 'Problem12'
+        problem.compute_f = @genhumps_5_func;
+        problem.compute_g = @genhumps_5_grad;
+        problem.compute_H = @genhumps_5_Hess;         
     
     case 'Quadratic10'
         

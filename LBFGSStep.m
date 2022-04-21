@@ -31,10 +31,80 @@ else
     zro = s_k' * y_k;
     if zro > options.term_tol * norm(s_k) * norm(y_k)
         
+        
         if cv_length < method.options.m_pairs
             curvature_pair{cv_length + 1} = {s_k,y_k};
         else
-            curvature_pair(1) = [];
+            
+           switch method.strategy
+                case 'Random'
+                    rng('shuffle');
+                    remove_idx = randi([1 method.options.m_pairs],1);
+                    temp_pair = {};
+                    temp_length = 1;
+                    for i = 1:cv_length
+                        if i == remove_idx
+                            continue;
+                        else
+                            temp_pair{temp_length} = curvature_pair{i};
+                            temp_length = temp_length + 1;
+                        end
+                    end
+                    curvature_pair = temp_pair;
+                case 'Max'
+                    max_idx = 1;
+                    max_value = abs(curvature_pair{1}{1}' * curvature_pair{1}{2});
+                    for i = 2:cv_length
+                        cp_value = abs(curvature_pair{i}{1}' * curvature_pair{i}{2});
+                        if cp_value > max_value
+                            max_value = cp_value;
+                            max_idx = i;
+                        end
+                    end
+                    
+                    remove_idx = max_idx;
+                    temp_pair = {};
+                    temp_length = 1;
+                    for i = 1:cv_length
+                        if i == remove_idx
+                            continue;
+                        else
+                            temp_pair{temp_length} = curvature_pair{i};
+                            temp_length = temp_length + 1;
+                        end
+                    end
+                    curvature_pair = temp_pair;
+                case 'Min'
+                    min_idx = 1;
+                    min_value = abs(curvature_pair{1}{1}' * curvature_pair{1}{2});
+                    for i = 2:cv_length
+                        cp_value = abs(curvature_pair{i}{1}' * curvature_pair{i}{2});
+                        if cp_value < min_value
+                            min_value = cp_value;
+                            min_idx = i;
+                        end
+                    end                 
+
+                    remove_idx = min_idx;
+                    temp_pair = {};
+                    temp_length = 1;
+                    for i = 1:cv_length
+                        if i == remove_idx
+                            continue;
+                        else
+                            temp_pair{temp_length} = curvature_pair{i};
+                            temp_length = temp_length + 1;
+                        end
+                    end
+                    curvature_pair = temp_pair;                    
+                
+               case 'Oldest'
+                    curvature_pair(1) = [];
+               otherwise
+                   error('Strategy not yet implemented!')
+            end
+                    
+            %curvature_pair(1) = [];
             curvature_pair{cv_length} = {s_k,y_k};
         end
     end    
