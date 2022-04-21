@@ -10,8 +10,8 @@ clear all
 clc
 
 % load quadratic data if needed
-% load('quadratic10.mat');
-% load('quadratic2.mat');
+data_p3 = load('problem3.mat');
+data_p4 = load('problem3.mat');
 
 % set problem (minimal requirement: name of problem)
 % Possible problems here, please type string inside ''
@@ -27,7 +27,7 @@ clc
 % 10. 'Problem10'
 % 11. 'Problem11'
 % 12. 'Problem12'
-problem.name = 'Problem7';
+problem.name = 'Problem2';
 
 if problem.name == "Quadratic2" || problem.name == "Quadratic10"
     if problem.name == "Quadratic2"
@@ -84,7 +84,9 @@ problem.n = length(problem.x0);
 % 8. BFGSW
 % 9. DFP
 % 10. DFPW
+
 method_name = "TRNewtonCG";
+
 
 if method_name == "GradientDescent"
     method.name = 'GradientDescent';
@@ -127,14 +129,14 @@ end
 % 5. DFP
 % 6. TRNewton
 % 7. TRSR1
-%method.name =  'Newton';
+%method.name =  'LBFGS';
 
 % Method for each algorithm
 % 1. GradientDescent: Backtracking/Constant/Wolfe 
 % 2. Newton:  Backtracking/Modified/Wolfe
 % 3. BFGS: Backtracking/Wolfe
 % 4. LBFGS: Backtracking/Wolfe
-% method.options.step_type = 'Wolfe';
+% method.options.step_type = 'Backtracking';
 
 % step size used by constant GD
 method.options.constant_step_size = 1e-3;
@@ -160,20 +162,26 @@ method.options.tr_c1 = 0.1;
 method.options.tr_c2 = 0.9;
 
 % parameters for L-BFGS(number of cuvature pairs)
-% n = 2,5,10
+% n = 3,5,8,10
 % change method.options.m_pairs to decide numbe of curvature pairs used in
 % L-BFGS
-method.options.m_pairs = 10;
+method.options.m_pairs = 3;
+% strategy to remove curvature pair 
+% 1. Random: randomly remove one of curvature pairs in each iteration  
+% 2. Min: remove curvature pair with minimum absolute inner product
+% 3. Max: remove curvatire pair with maximum absolute inner product
+% 4. Oldest: remove oldest curvature
+method.strategy = 'Oldest';
 
 % set options
 options.term_tol = 1e-6;
-options.max_iterations = 1e3;
+options.max_iterations = 5e4;
 options.beta = 1e-6;
 
 % run method and return x^* and f^* and (difference between f - f^*, if
 % needed)
 
-[x1,f,f_diff] = optSolver_Hu_Jinyang(problem,method,options);
+[x1,f,f_diff] = optSolver_CHL(problem,method,options);
 disp('Done!')
 
 

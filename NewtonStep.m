@@ -10,7 +10,11 @@
 
 
 
-function [x_new,f_new,g_new,h_new,d,alpha] = NewtonStep(x,f,g,H,problem,method,options)
+function [x_new,f_new,g_new,h_new,d,alpha,f_k,g_k] = NewtonStep(x,f,g,H,problem,method,options)
+
+% number of evaluations
+f_k = 0;
+g_k = 0;
 
 % search direction is -h\g
 gd = g;
@@ -60,22 +64,26 @@ switch method.options.step_type
            x_temp = x + alpha * d;
            threshold = f_x + method.options.initial_constant * alpha * g' * d;
            if problem.compute_f(x_temp) <= threshold
+               f_k = f_k + 1;
                break
            end
            alpha = method.options.zro * alpha;
+           f_k = f_k + 1;
         end 
 
         x_new = x + alpha*d;
         f_new = problem.compute_f(x_new);
         g_new = problem.compute_g(x_new);
-        h_new = problem.compute_H(x_new);          
+        h_new = problem.compute_H(x_new);
+        f_k = f_k + 1;
+        g_k = g_k + 1;
     
     case 'Wolfe'
         % modification of Hessian if needed, using Chol decomposition
         d = 0;
         alpha = 1;
         % find smallest Aii
-        min_h_element = 1e10;
+        min_h_element = 1e15;
         h_size = problem.n;
         for i = 1:h_size
             if h(i,i) < min_h_element
@@ -111,9 +119,11 @@ switch method.options.step_type
         while true
            x_temp = x + alpha * d;
            f_temp = problem.compute_f(x_temp);
+           f_k = f_k + 1;
            threshold = f_x + method.options.c1 * alpha * g' * d;
            if f_temp <= threshold
                g_temp = problem.compute_g(x_temp);
+               g_k = g_k + 1;
                if g_temp' * d >= method.options.c2 * g_x' * d
                    break;
                end
@@ -129,6 +139,8 @@ switch method.options.step_type
         f_new = problem.compute_f(x_new);
         g_new = problem.compute_g(x_new);         
         h_new = problem.compute_H(x_new);
+        f_k = f_k + 1;
+        g_k = g_k + 1;
 
     otherwise
             error('Method not implemented yet!')        

@@ -54,65 +54,6 @@ function [problem] = setProblem(problem)
     % (2) gradient: fun2_g(x)
     % (3) Hessian: fun2_H(x)
 
-    function f_value = fun2_func(x)
-        f_value = 0;
-        for i = 1:problem.n
-            f_value = f_value + (problem.y(i) - x(1)*(1-x(2)^i))^2;
-        end
-    end
-    
-    function [g] = fun2_g(x)
-        g1 = 0;
-        g2 = 0;
-        for i= 1:problem.n
-            g1 = g1 + 2*(problem.y(i) - x(1)*(1- x(2)^i))*(-(1-x(2)^i));
-            g2 = g2 + 2*(problem.y(i) - x(1)*(1- x(2)^i))*x(1)*i*x(2)^(i-1);
-        end
-        g = [g1;g2];
-    end
-    
-    function [H] = fun2_H(x)
-        h11 = 0;
-        h12 = 0;
-        h22 = 0;
-        for i = 1:problem.n
-            h11 = h11+ 2*(problem.y(i) - x(i)*(1-x(2)^i))*(1-x(2)^i)^2;
-            h12 = h12 + 2*i*x(2)^(i-1)*(problem.y(i)- x(1)*(1-x(2)^i)-x(1)*((1-x(2)^i)));
-            h22 = h22 + 2*x(1)*i*((problem.y(i) - x(1)*(1-x(2)^i))*(i-1)*x(2)^(i-2)+x(1)*i*x(2)^(2*i-2));
-        end    
-        H = [h11 h12;h12 h22];
-    end
-
-    % calculation of information needed for "Function3"
-    % (1) function value: fun3_func(x)
-    % (2) gradient: fun3_g(x)
-    % (3) Hessian: fun3_H(x)
-
-    function f_value = fun3_func(x)
-        z1 = (exp(x(1)) - 1)/(exp(x(1)) + 1) + 0.1 * exp(-x(1));
-        rest_sum = 0;
-        for i = 2:problem.n
-            rest_sum = rest_sum + (x(i) - 1)^4;
-        end
-        f_value = z1 + rest_sum;
-    end
-    
-    function [g] = fun3_g(x)
-        g = zeros(problem.n,1);
-        g(1) = 2*exp(x(1)) / (exp(x(1)) + 1)^2 - 0.1*exp(-x(1));
-        for i = 2:problem.n
-            g(i) = 4*(x(i)-1)^3;
-        end
-    end
-    
-    function [H] = fun3_H(x)
-       H = zeros(problem.n, problem.n);
-       H(1,1) = 2*(exp(x(1)) * (exp(x(1)) + 1)^2 -  (exp(x(1)) + 1) * exp(x(1)))  / (exp(x(1)) + 1)^4 + 0.1*exp(-x(1));
-       %H(1,1) = 2*(-exp(2*x(1))+exp(x(1)))/(exp(x(1))+1)^3 + 0.1*exp(-x(1));
-       for i = 2:problem.n
-            H(i,i) = 12*(x(i) - 1)^2;
-        end
-    end
 
 % check is problem name available
 if ~isfield(problem,'name')
@@ -133,14 +74,14 @@ switch problem.name
         problem.compute_H = @quad_10_1000_Hess;
 
     case 'Problem3'
-        problem.compute_f = @quad_1000_10_func;
-        problem.compute_g = @quad_1000_10_grad;
-        problem.compute_H = @quad_1000_10_Hess;
+        problem.compute_f = @(x) 1/2*x'*problem.data.Q*x + problem.data.q'*x;
+        problem.compute_g = @(x) problem.data.Q*x + problem.data.q;
+        problem.compute_H = @(x) problem.data.Q;
 
     case 'Problem4'
-        problem.compute_f = @quad_1000_1000_func;
-        problem.compute_g = @quad_1000_1000_grad;
-        problem.compute_H = @quad_1000_1000_Hess;        
+        problem.compute_f = @(x) 1/2*x'*problem.data.Q*x + problem.data.q'*x;
+        problem.compute_g = @(x) problem.data.Q*x + problem.data.q;
+        problem.compute_H = @(x) problem.data.Q;      
 
     case 'Problem5'
         problem.compute_f = @quartic_1_func;

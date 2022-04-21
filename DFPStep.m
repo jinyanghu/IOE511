@@ -9,9 +9,14 @@
 %
 
 
-function [x_new,f_new,g_new,h_new,d,alpha,skip] = DFPStep(x,x_old,f,g,g_old,H,problem,method,options)
+function [x_new,f_new,g_new,h_new,d,alpha,skip,f_k,g_k] = DFPStep(x,x_old,f,g,g_old,H,problem,method,options)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
+
+% number of evaluations
+f_k = 0;
+g_k = 0;
+
 skip = 0;
 % BFGS update for each iteration to decide Hessian approximation
 gd = g;
@@ -43,16 +48,21 @@ switch method.options.step_type
            x_temp = x + alpha * d;
            threshold = f_x + method.options.initial_constant * alpha * g' * d;
            if problem.compute_f(x_temp) <= threshold
+               f_k = f_k + 1;
                break
            end
            alpha = method.options.zro * alpha;
+           f_k = f_k + 1;
         end
         
         x_new = x + alpha*d;
         f_new = problem.compute_f(x_new);
         g_new = problem.compute_g(x_new);
         h_new = h;        
-    
+        
+        f_k = f_k + 1;
+        g_k = g_k + 1;
+        
     case 'Wolfe'   
         
         alpha = method.options.initial_step_size;
@@ -64,9 +74,11 @@ switch method.options.step_type
         while true
            x_temp = x + alpha * d;
            f_temp = problem.compute_f(x_temp);
+           f_k = f_k + 1;
            threshold = f_x + method.options.c1 * alpha * g' * d;
            if f_temp <= threshold
                g_temp = problem.compute_g(x_temp);
+               g_k = g_k + 1;
                if g_temp' * d >= method.options.c2 * g_x' * d
                    break;
                end
@@ -82,11 +94,12 @@ switch method.options.step_type
         f_new = problem.compute_f(x_new);
         g_new = problem.compute_g(x_new);
         h_new = h;
+        f_k = f_k + 1;
+        g_k = g_k + 1;
 
     otherwise
             error('Method not implemented yet!')        
-          
-        
+                  
         % fprintf('%.4f\n',alpha);        
 end
 end
