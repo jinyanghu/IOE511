@@ -24,8 +24,8 @@ skip = 0;
 if class(x_old(1)) == "double" 
     s_k = x - x_old;
     y_k = g - g_old;
-    zro = s_k' * y_k;
-    if zro <= options.term_tol * norm(s_k) * norm(y_k)
+    rho = s_k' * y_k;
+    if rho <= options.term_tol * norm(s_k) * norm(y_k)
         h = H;
         skip = 1;
     else

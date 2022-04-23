@@ -100,10 +100,10 @@ method.options.constant_step_size = 1e-3;
 % parameters for Backtracking line search
 % inital_step_size(alpha_hat)
 % initial_constant(c) 
-% zro(decreasing_factor)
+% rho(decreasing_factor)
 method.options.initial_step_size = 1;
 method.options.initial_constant = 1e-8;
-method.options.zro = 0.5;
+method.options.rho = 0.5;
 
 % parameters for Wolfe line search
 method.options.c = 0.5;

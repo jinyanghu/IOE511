@@ -56,20 +56,13 @@ switch method.options.step_type
             end
             eta = max(2*eta, options.beta);
         end
+        
         % backtracking line search to find alpha for d_k
-
         alpha = method.options.initial_step_size;
-        f_x = problem.compute_f(x);
-        while true
-           x_temp = x + alpha * d;
-           threshold = f_x + method.options.initial_constant * alpha * g' * d;
-           if problem.compute_f(x_temp) <= threshold
-               f_k = f_k + 1;
-               break
-           end
-           alpha = method.options.zro * alpha;
-           f_k = f_k + 1;
-        end 
+        while problem.compute_f(x + alpha*d) > f + method.options.initial_constant * alpha * g'*d
+            alpha = method.options.rho * alpha;
+            f_k = f_k + 1;
+        end
 
         x_new = x + alpha*d;
         f_new = problem.compute_f(x_new);

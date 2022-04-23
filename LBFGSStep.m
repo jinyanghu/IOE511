@@ -28,8 +28,8 @@ if class(x_old(1)) ~= "double"
 else
     s_k = x - x_old;
     y_k = g - g_old;
-    zro = s_k' * y_k;
-    if zro > options.term_tol * norm(s_k) * norm(y_k)
+    rho = s_k' * y_k;
+    if rho > options.term_tol * norm(s_k) * norm(y_k)
         
         
         if cv_length < method.options.m_pairs
@@ -112,14 +112,14 @@ end
 
 % first loop: start with the most recent pairs
 alpha_list = cell(1,cv_length);
-zro_list = cell(1,cv_length);
+rho_list = cell(1,cv_length);
 for i = cv_length:-1:1
     si = curvature_pair{i}{1};
     yi = curvature_pair{i}{2};
-    zro = 1/ (si' * yi);
-    alpha = zro * si' * gd;
+    rho = 1/ (si' * yi);
+    alpha = rho * si' * gd;
     alpha_list{i} = alpha;
-    zro_list{i} = zro;
+    rho_list{i} = rho;
     gd = gd - alpha * yi;
 end
 
@@ -130,7 +130,7 @@ r = h * gd;
 for i= 1:cv_length%cv_length:-1:1
     si = curvature_pair{i}{1};
     yi = curvature_pair{i}{2};    
-    beta = zro_list{i} * yi' * r;
+    beta = rho_list{i} * yi' * r;
     r = r + si * (alpha_list{i} - beta);
 end
 
@@ -148,7 +148,7 @@ switch method.options.step_type
            if problem.compute_f(x_temp) <= threshold
                break
            end
-           alpha = method.options.zro * alpha;
+           alpha = method.options.rho * alpha;
         end
         
         x_new = x + alpha*d;

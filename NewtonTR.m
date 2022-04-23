@@ -68,14 +68,14 @@ end
 f_new = problem.compute_f(real(x+d));
 f_k = f_k + 1;
 m_k = f + g' * d + (d'*H*d)/2;
-zro = (f - f_new)/(f-m_k);
+rho = (f - f_new)/(f-m_k);
 
-if zro > method.options.tr_c1
+if rho > method.options.tr_c1
     x_new = x + d;
     g_new = problem.compute_g(x_new);
     h_new = problem.compute_H(x_new);
     g_k = g_k + 1;
-    if zro > method.options.tr_c2
+    if rho > method.options.tr_c2
         delta_new = 2*delta;
     else
         delta_new = delta;
