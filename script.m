@@ -14,7 +14,7 @@ addpath(genpath(folder));
 
 % load quadratic data if needed
 data_p3 = load('problem3.mat');
-data_p4 = load('problem3.mat');
+data_p4 = load('problem4.mat');
 
 % set problem (minimal requirement: name of problem)
 % Possible problems here, please type string inside ''
