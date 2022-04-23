@@ -8,7 +8,7 @@ g_k = 0;
 if class(x_old(1)) == "double" 
     s_k = x - x_old;
     y_k = g - g_old;
-    z = (y_k - H*s_k)' * y_k;
+    z = (y_k - H*s_k)' * s_k;
     if abs(z) <= options.term_tol * norm(s_k) * norm((y_k - H*s_k))
         h = H;
     else
