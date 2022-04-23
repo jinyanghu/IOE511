@@ -23,13 +23,6 @@ while true
         p_square = norm(p)^2;
         z_square = norm(z)^2;
         tao = (-2*z'*p+sqrt(4*p_square*z_square-4*(z_square - region_size^2)))/(2*p_square);
-        %g_z = B*z+r;
-        %tao2 = g_z'*p/hessian_p;
-        %if abs(tao1) < abs(tao2)
-        %    tao = tao1;
-        %else
-        %    tao = tao2;
-        %end
         d = z + tao * p;
         break
     end
@@ -40,14 +33,7 @@ while true
     if norm(z_next) >= region_size
         p_square = norm(p)^2;
         z_square = norm(z)^2;       
-        tao = (-2*z'*p+sqrt(4*p_square*z_square-4*(z_square - region_size^2)))/(2*p_square);
-        %g_z = B*z+r;
-        %tao2 = g_z'*p/hessian_p;
-        %if abs(tao1) < abs(tao2)
-        %    tao = tao1;
-        %else
-        %    tao = tao2;
-        %end        
+        tao = (-2*z'*p+sqrt(4*p_square*z_square-4*(z_square - region_size^2)))/(2*p_square);  
         d = z + tao * p;
         break
     end
