@@ -9,6 +9,9 @@ close all
 clear all
 clc
 
+folder = fileparts(which(mfilename));
+addpath(genpath(folder));
+
 % load quadratic data if needed
 data_p3 = load('problem3.mat');
 data_p4 = load('problem3.mat');
@@ -37,7 +40,7 @@ if problem.name == "Quadratic2" || problem.name == "Quadratic10"
     end    
     problem.A = A;
     problem.b = b;
-    problem.c = c;   
+    problem.c = c;
 end
 
 % set problem type: two types of problems 
@@ -144,10 +147,10 @@ method.options.constant_step_size = 1e-3;
 % parameters for Backtracking line search
 % inital_step_size(alpha_hat)
 % initial_constant(c) 
-% zro(decreasing_factor)
+% rho(decreasing_factor)
 method.options.initial_step_size = 1;
 method.options.initial_constant = 1e-8;
-method.options.zro = 0.5;
+method.options.rho = 0.5;
 
 % parameters for Wolfe line search
 method.options.c = 0.5;

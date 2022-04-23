@@ -21,21 +21,17 @@ switch method.options.step_type
         x_new = x + alpha*d;
         f_new = problem.compute_f(x_new);
         g_new = problem.compute_g(x_new);
+
         gd_k = gd_k + 1;
         f_k = f_k + 1;
     case 'Backtracking'
-        % implementation of Backtracking line search with Armijo condition        
+        % implementation of Backtracking line search with Armijo condition
         alpha = method.options.initial_step_size;
-        f_x = problem.compute_f(x);
-        while true
-           x_temp = x + alpha * d;
-           threshold = f_x + method.options.initial_constant * alpha * g' * d;
-           if problem.compute_f(x_temp) <= threshold
-               f_k = f_k + 1;
-               break
-           end
-           alpha = method.options.zro * alpha;
-           f_k = f_k+1;
+
+        while problem.compute_f(x + alpha*d) > f + method.options.initial_constant * alpha * g'*d
+            alpha = method.options.rho * alpha;
+            f_k = f_k+1;
+
         end
         
         % fprintf('%.4f, (%.4f,  %.4f) \n',alpha, x(1),x(2));
@@ -76,6 +72,7 @@ switch method.options.step_type
         f_k = f_k + 1;
         g_new = problem.compute_g(x_new);
         gd_k = gd_k + 1;
+
     otherwise
             error('Method not implemented yet!')           
 end

@@ -9,51 +9,48 @@
 %
 
 
-
 function [x_new,f_new,g_new,h_new,d,alpha,skip,f_k,g_k] = BFGSStep(x,x_old,f,g,g_old,H,problem,method,options)
-
 % number of evaluations
 f_k = 0;
 g_k = 0;
 
+% size of x (nx1 vector)
+n = size(x,1);
+
+% 0 = not skip, 1 = skip
 skip = 0;
+
 % BFGS update for each iteration to decide Hessian approximation
-gd = g;
 if class(x_old(1)) == "double" 
     s_k = x - x_old;
     y_k = g - g_old;
-    zro = s_k' * y_k;
-    if zro <= options.term_tol * norm(s_k) * norm(y_k)
+    rho = s_k' * y_k;
+    % skip update if rho is smaller than a threshold
+    if rho <= options.term_tol * norm(s_k) * norm(y_k)
         h = H;
         skip = 1;
+    % update if rho is larger than a threshold
     else
-        identity = eye(max(size(x)));
-        h = (identity - 1/zro * s_k .* y_k') * H * (identity - 1/zro * y_k .* s_k') + 1/zro * (s_k .* s_k');
+        h = (eye(n) - 1/rho * s_k .* y_k') * H * (eye(n) - 1/rho * y_k .* s_k') + 1/rho * (s_k .* s_k');
     end
 else
-    h = eye(max(size(x)));
+    h = eye(n);
 end
 
-d =  -h * gd; 
+d =  -h * g;
 
 % determine step size
 switch method.options.step_type
     case 'Backtracking'
-              
+        
         % implementation of Backtracking line search with Armijo condition
         alpha = method.options.initial_step_size;
-        f_x = problem.compute_f(x);
-        while true
-           x_temp = x + alpha * d;
-           threshold = f_x + method.options.initial_constant * alpha * g' * d;
-           if problem.compute_f(x_temp) <= threshold
-               f_k = f_k + 1;
-               break
-           end
-           alpha = method.options.zro * alpha;
-           f_k = f_k + 1;
+        while problem.compute_f(x + alpha*d) > f + method.options.initial_constant * alpha * g'*d
+            alpha = method.options.rho * alpha;
+            f_k = f_k + 1;
         end
-        
+
+        % update x,f,g,h
         x_new = x + alpha*d;
         f_new = problem.compute_f(x_new);
         g_new = problem.compute_g(x_new);
@@ -63,21 +60,20 @@ switch method.options.step_type
         
     case 'Wolfe'   
         
+        % implementation of Backtracking line search with Wolfe condition
         alpha = method.options.initial_step_size;
         alpha_low = 0;
         alpha_high = 1000;
-        f_x = problem.compute_f(x);
-        g_x = problem.compute_g(x);
-
+        
         while true
            x_temp = x + alpha * d;
            f_temp = problem.compute_f(x_temp);
            f_k = f_k + 1;
-           threshold = f_x + method.options.c1 * alpha * g' * d;
+           threshold = f + method.options.c1 * alpha * g' * d;
            if f_temp <= threshold
                g_temp = problem.compute_g(x_temp);
                g_k = g_k + 1;
-               if g_temp' * d >= method.options.c2 * g_x' * d
+               if g_temp' * d >= method.options.c2 * g' * d
                    break;
                end
                alpha_low = alpha;

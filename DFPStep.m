@@ -10,16 +10,17 @@
 
 
 function [x_new,f_new,g_new,h_new,d,alpha,skip,f_k,g_k] = DFPStep(x,x_old,f,g,g_old,H,problem,method,options)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
-
 % number of evaluations
 f_k = 0;
 g_k = 0;
 
+% size of x (nx1 vector)
+n = size(x,1);
+
 skip = 0;
+
 % BFGS update for each iteration to decide Hessian approximation
-gd = g;
+% If it's the first time, set h = identity. Otherwise update h with DFP method
 if class(x_old(1)) == "double" 
     s_k = x - x_old;
     y_k = g - g_old;
@@ -28,33 +29,26 @@ if class(x_old(1)) == "double"
         h = H;
         skip = 1;
     else
-        identity = eye(max(size(x)));
-        h = H - (H*y_k*y_k'*H)/(y_k'*H*y_k) + s_k*s_k'/(s_k' * y_k);
+        h = H - ((H*y_k)*(y_k'*H))/(y_k'*H*y_k) + s_k*s_k'/(s_k' * y_k);
     end
 else
-    h = eye(max(size(x)));
+    h = eye(n);
 end
 
-d =  -h * gd;  
+d = -h * g;
 
 % determine step size
 switch method.options.step_type
     case 'Backtracking'
-              
+
         % implementation of Backtracking line search with Armijo condition
         alpha = method.options.initial_step_size;
-        f_x = problem.compute_f(x);
-        while true
-           x_temp = x + alpha * d;
-           threshold = f_x + method.options.initial_constant * alpha * g' * d;
-           if problem.compute_f(x_temp) <= threshold
-               f_k = f_k + 1;
-               break
-           end
-           alpha = method.options.zro * alpha;
-           f_k = f_k + 1;
+        while problem.compute_f(x + alpha*d) > f + method.options.initial_constant * alpha * g'*d
+            f_k = f_k + 1;
+            alpha = method.options.rho * alpha;
         end
-        
+
+        % update x,f,g,h
         x_new = x + alpha*d;
         f_new = problem.compute_f(x_new);
         g_new = problem.compute_g(x_new);
