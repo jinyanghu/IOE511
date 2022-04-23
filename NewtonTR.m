@@ -1,10 +1,6 @@
-function [x_new,f_new,g_new,h_new,d,delta_new,f_k,g_k] = NewtonTR(x,f,g,H,delta,problem,method,options)
+function [x_new,f_new,g_new,h_new,d,delta_new] = NewtonTR(x,f,g,H,delta,problem,method,options)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
-
-% number of evaluations
-f_k = 0;
-g_k = 0;
 
 B = H;
 
@@ -22,14 +18,7 @@ while true
     if hessian_p <= 0
         p_square = norm(p)^2;
         z_square = norm(z)^2;
-        tao1 = (-2*z'*p+sqrt(4*p_square*z_square-4*(z_square - region_size^2)))/(2*p_square);
-        g_z = B*z+r;
-        tao2 = g_z'*p/hessian_p;
-        if abs(tao1) < abs(tao2)
-            tao = tao1;
-        else
-            tao = tao2;
-        end
+        tao = (-2*z'*p+sqrt(4*p_square*z_square-4*(z_square - region_size^2)))/(2*p_square);
         d = z + tao * p;
         break
     end
@@ -40,14 +29,7 @@ while true
     if norm(z_next) >= region_size
         p_square = norm(p)^2;
         z_square = norm(z)^2;       
-        tao1 = (-2*z'*p+sqrt(4*p_square*z_square-4*(z_square - region_size^2)))/(2*p_square);
-        g_z = B*z+r;
-        tao2 = g_z'*p/hessian_p;
-        if abs(tao1) < abs(tao2)
-            tao = tao1;
-        else
-            tao = tao2;
-        end        
+        tao = (-2*z'*p+sqrt(4*p_square*z_square-4*(z_square - region_size^2)))/(2*p_square);    
         d = z + tao * p;
         break
     end
@@ -66,23 +48,21 @@ while true
 end
 
 f_new = problem.compute_f(real(x+d));
-f_k = f_k + 1;
 m_k = f + g' * d + (d'*H*d)/2;
-rho = (f - f_new)/(f-m_k);
+zro = (f - f_new)/(f-m_k);
 
-if rho > method.options.tr_c1
+if zro > method.options.tr_c1
     x_new = x + d;
     g_new = problem.compute_g(x_new);
     h_new = problem.compute_H(x_new);
-    g_k = g_k + 1;
-    if rho > method.options.tr_c2
+    if zro > method.options.tr_c2
         delta_new = 2*delta;
     else
         delta_new = delta;
     end
     x_new = real(x_new);
 else
-    delta_new = delta/4;
+    delta_new = delta/2;
     x_new = x;
     g_new = g;
     h_new = H;
