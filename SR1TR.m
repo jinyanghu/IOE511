@@ -98,6 +98,7 @@ if rho > method.options.tr_c1
 else
     delta_new = delta/4;
     x_new = x;
+    f_new = f;
     g_new = g;
     h_new = H;
 end

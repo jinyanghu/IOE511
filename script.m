@@ -178,13 +178,13 @@ method.strategy = 'Oldest';
 
 % set options
 options.term_tol = 1e-6;
-options.max_iterations = 5e4;
+options.max_iterations = 1000;
 options.beta = 1e-6;
 
 % run method and return x^* and f^* and (difference between f - f^*, if
 % needed)
 
-[x1,f,f_diff] = optSolver_CHL(problem,method,options);
+[x1,f,f_diff,f_k,gd_k] = optSolver_CHL(problem,method,options);
 disp('Done!')
 
 

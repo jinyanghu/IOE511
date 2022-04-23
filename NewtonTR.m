@@ -82,9 +82,10 @@ if rho > method.options.tr_c1
     end
     x_new = real(x_new);
 else
-    delta_new = delta/4;
+    delta_new = delta/2;
     x_new = x;
     g_new = g;
+    f_new = f;
     h_new = H;
 end
 end
