@@ -1,14 +1,27 @@
+% IOE 511/MATH 562, University of Michigan
+% Code written by: Jin-Yang Hu
+
+% Function that: (1) computes the trust region direction; (2) updates the iterate; and, 
+%                (3) computes the function, gradient, hessian and size of trust region at 
+%                    the new iterate
+% 
+%           Inputs: x, f, g, H, delta, problem, method, options
+%           Outputs: x_new, f_new, g_new, h_new, d, delta_new, f_k, g_k
+%
+
+
 function [x_new,f_new,g_new,h_new,d,delta_new,f_k,g_k] = SR1TR(x,x_old,f,g,g_old,H,delta,problem,method,options)
 % Detailed explanation goes here
-% number of evaluations
+% number of evaluations: function/gradient
 f_k = 0;
 g_k = 0;
 
-
+% B: Rank-1 update for Hessian approximation
 if class(x_old(1)) == "double" 
     s_k = x - x_old;
     y_k = g - g_old;
     z = (y_k - H*s_k)' * s_k;
+    % threshold to check whether update should perform
     if abs(z) <= options.term_tol * norm(s_k) * norm((y_k - H*s_k))
         h = H;
     else
@@ -18,8 +31,10 @@ else
     h = H;
 end
 
+% B: updated Hessian appromixation
 B = h;
 
+% implementation of Steihaug CG to solve subproblem
 region_size = delta;
 z = zeros(problem.n,1);
 r = g;
@@ -62,6 +77,11 @@ while true
     r = r_next;
     z = z_next;
 end
+
+% evaluation of the direction
+% if greater than tr_c1, then update
+% if greater than tr_c2, then expand trust region
+% else: do not update, then shrink trust region
 
 f_new = problem.compute_f(real(x+d));
 f_k = f_k + 1;
