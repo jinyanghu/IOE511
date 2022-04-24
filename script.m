@@ -92,7 +92,7 @@ problem.n = length(problem.x0);
 % 9. DFP
 % 10. DFPW
 
-method_name = "TRNewtonCG";
+method_name = "TRSR1CG";
 
 
 if method_name == "GradientDescent"
@@ -182,7 +182,7 @@ method.strategy = 'Oldest';
 
 % set options
 options.term_tol = 1e-6;
-options.max_iterations = 50;
+options.max_iterations = 1000;
 options.beta = 1e-6;
 
 % run method and return x^* and f^* and (difference between f - f^*, if
