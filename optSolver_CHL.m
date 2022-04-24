@@ -35,6 +35,7 @@ f_k = f_k + 1;
 g = problem.compute_g(x);
 gd_k = gd_k+1;
 
+% Hessian initialization for different method
 if method.name ~= "BFGS" || method.name~= "LBFGS" || method.name ~= "DFP" ...
    || method.name ~= "TRSR1"     
     [H] = problem.compute_H(x);
@@ -102,6 +103,7 @@ while norm_g >= options.term_tol*max(1,norm_g0)  && k < options.max_iterations
         [H] = h_new;
     end
     
+    % update delta for TR method
     if method.name == "TRNewton" || method.name == "TRSR1"
         delta_old = delta;
         delta = delta_new;
@@ -109,8 +111,10 @@ while norm_g >= options.term_tol*max(1,norm_g0)  && k < options.max_iterations
 
     % increment iteration counter
     k = k + 1;
+    
     % update f(x) - f^* 
     f_diff(k) = problem.compute_f(x_old) - problem.opt_f;
+    
     % fprintf('%d, %.4f\n',k,problem.f_diff(k));
 end
 

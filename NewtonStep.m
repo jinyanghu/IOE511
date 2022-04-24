@@ -12,7 +12,7 @@
 
 function [x_new,f_new,g_new,h_new,d,alpha,f_k,g_k] = NewtonStep(x,f,g,H,problem,method,options)
 
-% number of evaluations
+% number of evaluations: function/gradient
 f_k = 0;
 g_k = 0;
 
@@ -25,8 +25,8 @@ h = H;
 % determine step size
 switch method.options.step_type
 
-    case 'Backtracking'
-        
+    % implementation of Backtracking line search with Armijo condition
+    case 'Backtracking'        
         % modification of Hessian if needed, using Chol decomposition
         d = 0;
         alpha = 1;
@@ -41,6 +41,7 @@ switch method.options.step_type
 
         identity = eye(h_size);
 
+        % set eta
         if min_h_element > 0
             eta = 0;
         else
@@ -57,20 +58,24 @@ switch method.options.step_type
             eta = max(2*eta, options.beta);
         end
         
-        % backtracking line search to find alpha for d_k
+        %find alpha for d_k that satisfies Armijo condition
         alpha = method.options.initial_step_size;
         while problem.compute_f(x + alpha*d) > f + method.options.initial_constant * alpha * g'*d
             alpha = method.options.rho * alpha;
             f_k = f_k + 1;
         end
 
+        % update x,f,g,h
         x_new = x + alpha*d;
         f_new = problem.compute_f(x_new);
         g_new = problem.compute_g(x_new);
         h_new = problem.compute_H(x_new);
+
+        % counting times of computing f, g
         f_k = f_k + 1;
         g_k = g_k + 1;
     
+    % implementation of line search with Wolfe condition
     case 'Wolfe'
         % modification of Hessian if needed, using Chol decomposition
         d = 0;
@@ -86,6 +91,7 @@ switch method.options.step_type
 
         identity = eye(h_size);
 
+        % set eta
         if min_h_element > 0
             eta = 0;
         else
@@ -109,14 +115,19 @@ switch method.options.step_type
         f_x = problem.compute_f(x);
         g_x = problem.compute_g(x);
 
+        % find alpha that satisfies wolfe condition
         while true
            x_temp = x + alpha * d;
            f_temp = problem.compute_f(x_temp);
            f_k = f_k + 1;
+           
+           % Armijo condition
            threshold = f_x + method.options.c1 * alpha * g' * d;
            if f_temp <= threshold
                g_temp = problem.compute_g(x_temp);
                g_k = g_k + 1;
+
+               % Curverture condition
                if g_temp' * d >= method.options.c2 * g_x' * d
                    break;
                end
@@ -127,18 +138,18 @@ switch method.options.step_type
            alpha = method.options.c*alpha_low + (1-method.options.c)*alpha_high;
         end
         
-        % fprintf('%.4f, (%.4f,  %.4f) \n',alpha, x(1),x(2));
+        % update x,f,g,h
         x_new = x + alpha*d;
         f_new = problem.compute_f(x_new);
         g_new = problem.compute_g(x_new);         
         h_new = problem.compute_H(x_new);
+
+        % counting times of computing f, g
         f_k = f_k + 1;
         g_k = g_k + 1;
 
     otherwise
-            error('Method not implemented yet!')        
-                  
-        % fprintf('%.4f\n',alpha);        
+            error('Method not implemented yet!')   
 end
 end
 

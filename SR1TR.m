@@ -40,12 +40,15 @@ z = zeros(problem.n,1);
 r = g;
 p = -r;
 
+% if norm of r is small, let the direction d = 0
 if norm(r,"inf") < method.options.term_tol_CG
     d = z;
     return 
 end
 
+% CG Steihaug algorithm
 while true
+    % check if B is non-PD, if so, if so, calculate tao and return || d || = || z + tao*p || = || delta ||
     hessian_p = p'*B*p;
     if hessian_p <= 0
         p_square = norm(p)^2;
@@ -55,9 +58,11 @@ while true
         break
     end
     
+    % update alpha and z
     alpha = (r' * r)/hessian_p;
     z_next = z + alpha*p;
 
+    % check norm of z is larger than the region size , if so, calculate tao and return || d || = || z + tao*p || = || delta ||
     if norm(z_next) >= region_size
         p_square = norm(p)^2;
         z_square = norm(z)^2;
@@ -66,23 +71,27 @@ while true
         break
     end
     
+    % update r
     r_next = r + alpha * B * p;
+
+    % if residual r is samll, return d = z
     if norm(r_next,"inf") <= method.options.term_tol_CG
         d = z_next;
         break
     end
 
+    % update parameters
     beta = (r_next' * r_next)/(r' * r);
     p = -r_next + beta * p;
     r = r_next;
     z = z_next;
 end
 
-% evaluation of the direction
+% trust region method
+% evaluation rho to see if the model represents the true cost function well
 % if greater than tr_c1, then update
-% if greater than tr_c2, then expand trust region
-% else: do not update, then shrink trust region
-
+% if greater than tr_c2, then expand trust region (allow to take a larger step)
+% else: do not update, then shrink trust region (worse step)
 f_new = problem.compute_f(real(x+d));
 f_k = f_k + 1;
 m_k = f + g' * d + (d'*h*d)/2;
