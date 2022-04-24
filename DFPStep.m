@@ -69,8 +69,6 @@ switch method.options.step_type
         alpha = method.options.initial_step_size;
         alpha_low = 0;
         alpha_high = 1000;
-        f_x = problem.compute_f(x);
-        g_x = problem.compute_g(x);
 
         % find alpha satisfies Wolfe condition
         while true
@@ -79,13 +77,13 @@ switch method.options.step_type
            f_k = f_k + 1;
 
            % Armijo condition
-           threshold = f_x + method.options.c1 * alpha * g' * d;
+           threshold = f + method.options.c1 * alpha * g' * d;
            if f_temp <= threshold
                g_temp = problem.compute_g(x_temp);
                g_k = g_k + 1;
 
                % Curverture condition
-               if g_temp' * d >= method.options.c2 * g_x' * d
+               if g_temp' * d >= method.options.c2 * g' * d
                    break;
                end
                alpha_low = alpha;
@@ -104,7 +102,6 @@ switch method.options.step_type
         % counting times of computing f, g
         f_k = f_k + 1;
         g_k = g_k + 1;
-
     otherwise
             error('Method not implemented yet!')
 end
