@@ -151,12 +151,12 @@ for i = 1:12
 
     if problem.name == "Problem1"
         rng(0);
-        q = rand(10,1);
+        q = randn(10,1);
         Q = sprandsym(10,0.5,0.1,1);
         problem.x_star = -Q\q;
     elseif problem.name == "Problem2"
         rng(0);
-        q = rand(10,1);
+        q = randn(10,1);
         Q = sprandsym(10,0.5,1e-3,1);
         problem.x_star = -Q\q;        
     end
