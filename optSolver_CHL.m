@@ -97,7 +97,7 @@ while norm_g >= options.term_tol*max(1,norm_g0)  && k < options.max_iterations
     f_k = f_k + if_k;
     % only calculate H if Newton's method is used
     if method.name == "Newton" || method.name == "BFGS" ||  method.name == "DFP"...
-       || method.name == "TRNewton" || method.name == "TRSR1" 
+       || method.name == "TRNewton" || method.name == "TRSR1" || method.name == "DFPW" 
         h_old = [H];
         [H] = h_new;
     end
