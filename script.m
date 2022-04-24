@@ -30,7 +30,7 @@ data_p4 = load('problem4.mat');
 % 10. 'Problem10'
 % 11. 'Problem11'
 % 12. 'Problem12'
-problem.name = 'Problem2';
+problem.name = 'Problem7';
 
 if problem.name == "Quadratic2" || problem.name == "Quadratic10"
     if problem.name == "Quadratic2"
@@ -165,8 +165,8 @@ method.options.c2 = 1e-4;
 method.options.term_tol_CG = 1e-6;
 methods.options.max_iterations_CG = 1e3;
 method.options.region_size = 1;
-method.options.tr_c1 = 0.1;
-method.options.tr_c2 = 0.9;
+method.options.tr_c1 = 0.25;
+method.options.tr_c2 = 0.75;
 
 % parameters for L-BFGS(number of cuvature pairs)
 % n = 3,5,8,10
@@ -182,7 +182,7 @@ method.strategy = 'Oldest';
 
 % set options
 options.term_tol = 1e-6;
-options.max_iterations = 1000;
+options.max_iterations = 50;
 options.beta = 1e-6;
 
 % run method and return x^* and f^* and (difference between f - f^*, if

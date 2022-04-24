@@ -35,7 +35,7 @@ while true
     if hessian_p <= 0
         p_square = norm(p)^2;
         z_square = norm(z)^2;
-        tao = (-2*z'*p+sqrt(4*p_square*z_square-4*(z_square - region_size^2)))/(2*p_square);
+        tao = (-2*z'*p+sqrt(4*p_square*z_square-4*p_square*(z_square - region_size^2)))/(2*p_square);
         d = z + tao * p;
         break
     end
@@ -46,12 +46,13 @@ while true
     if norm(z_next) >= region_size
         p_square = norm(p)^2;
         z_square = norm(z)^2;       
-        tao = (-2*z'*p+sqrt(4*p_square*z_square-4*(z_square - region_size^2)))/(2*p_square);  
+        tao = (-2*z'*p+sqrt(4*p_square*z_square-4*p_square*(z_square - region_size^2)))/(2*p_square);  
         d = z + tao * p;
         break
     end
     
     r_next = r + alpha * B * p;
+
     if norm(r_next,"inf") <= method.options.term_tol_CG
         d = z_next;
         break
@@ -61,6 +62,7 @@ while true
     p = -r_next + beta * p;
     r = r_next;
     z = z_next;
+
 
 end
 
