@@ -1,11 +1,24 @@
+% IOE 511/MATH 562, University of Michigan
+% Code written by: Jin-Yang Hu
+
+% Function that: (1) computes the trust region direction; (2) updates the iterate; and, 
+%                (3) computes the function, gradient, hessian and size of trust region at 
+%                    the new iterate
+% 
+%           Inputs: x, f, g, H, delta, problem, method, options
+%           Outputs: x_new, f_new, g_new, h_new, d, delta_new, f_k, g_k
+%
+
 function [x_new,f_new,g_new,h_new,d,delta_new,f_k,g_k] = NewtonTR(x,f,g,H,delta,problem,method,options)
-%UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
-% number of evaluations
+% number of evaluations: function/gradient
 f_k = 0;
 g_k = 0;
 
+
+% implementation of Steihaug CG to solve subproblem
+% B: Hessian of objective function at x
 B = H;
 
 region_size = delta;
@@ -50,6 +63,11 @@ while true
     z = z_next;
 
 end
+
+% evaluation of the direction
+% if greater than tr_c1, then update
+% if greater than tr_c2, then expand trust region
+% else: do not update, then shrink trust region
 
 f_new = problem.compute_f(real(x+d));
 f_k = f_k + 1;
