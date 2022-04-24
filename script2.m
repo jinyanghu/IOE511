@@ -112,30 +112,53 @@ for i = 1:12
         problem.x0 = 20*rand(1000,1)-10;
     elseif problem.name == "Problem5" || problem.name == "Problem6"
         problem.x0 = [cos(70) sin(70) cos(70) sin(70)]';
+        problem.x_star = zeros(4,1);
     elseif problem.name == "Problem7"
         problem.x0 = [-1.2;1];
+        problem.x_star = [1;1];
     elseif problem.name == "Problem8"
         problem.x0 = ones(100,1);
         problem.x0(1) = -1.2;
+        problem.x_star = ones(100,1);
     elseif problem.name == "Problem9"
         problem.x0 = [1;1];
+        problem.x_star = [3;0.5];
     elseif problem.name == "Problem10"
         n = 10;
         problem.x0 = zeros(n,1);
         problem.x0(1) = 1;
+        problem.x_star = ones(n,1);
+        problem.x_star(1) = -1.2448;
     elseif problem.name == "Problem11"
         n = 1000;
         problem.x0 = zeros(n,1);
         problem.x0(1) = 1;
+        problem.x_star = ones(n,1);
+        problem.x_star(1) = -1.2448;        
     elseif problem.name == "Problem12"
         problem.x0 = ones(5,1)*(506.2);
         problem.x0(1) = -506.2;
+        problem.x_star = zeros(5,1);
     end
 
-    if problem.name == "Problem3" || problem.name == "Problem4"
+    if problem.name == "Problem3"
         problem.data = data_p3;
+        problem.x_star = -data_p3.Q\data_p3.q;
     elseif problem.name == "Problem4"
         problem.data = data_p4;
+        problem.x_star = -data_p4.Q\data_p4.q;
+    end
+
+    if problem.name == "Problem1"
+        rng(0);
+        q = rand(10,1);
+        Q = sprandsym(10,0.5,0.1,1);
+        problem.x_star = -Q\q;
+    elseif problem.name == "Problem2"
+        rng(0);
+        q = rand(10,1);
+        Q = sprandsym(10,0.5,1e-3,1);
+        problem.x_star = -Q\q;        
     end
 % dimension of the problem
     problem.n = length(problem.x0);
