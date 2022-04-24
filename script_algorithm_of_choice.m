@@ -37,8 +37,8 @@ method.options.step_type = 'Backtracking';
 % inital_step_size(alpha_hat)
 % initial_constant(c) 
 % rho(decreasing_factor)
-method.options.initial_step_size = 1;
-method.options.initial_constant = 1e-8;
+method.options.initial_step_size = 0.75;
+method.options.initial_constant = 1e-7;
 method.options.rho = 0.5;
 
 % set options
@@ -51,5 +51,5 @@ options.max_iterations = 1e3;
 % run method and return x^* and f^* and (difference between f - f^*, if
 % needed)
 
-[x1,f] = optSolver_Hu_Jinyang(problem,method,options);
+[x1,f] = optSolver_CHL(problem,method,options);
 disp('Done!')
