@@ -71,7 +71,7 @@ elseif problem.name == "Problem12"
     problem.x0 = ones(5,1)*(506.2);
     problem.x0(1) = -506.2;
 end
-if problem.name == "Problem3" || problem.name == "Problem4"
+if problem.name == "Problem3"
     problem.data = data_p3;
 elseif problem.name == "Problem4"
     problem.data = data_p4;
