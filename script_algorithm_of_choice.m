@@ -9,6 +9,9 @@ close all
 clear all
 clc
 
+folder = fileparts(which(mfilename));
+addpath(genpath(folder));
+
 % set problem (minimal requirement: name of problem)
 % Possible problems here, please type string inside ''
 % 1. 'Problem7': Rosenbrock_2

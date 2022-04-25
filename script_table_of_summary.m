@@ -9,6 +9,9 @@ close all
 clear all
 clc
 
+folder = fileparts(which(mfilename));
+addpath(genpath(folder));
+
 % load quadratic data if needed
 data_p3 = load('problem3.mat');
 data_p4 = load('problem4.mat');
