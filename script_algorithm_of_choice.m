@@ -28,7 +28,7 @@ end
 problem.n = length(problem.x0);
 
 % final choice of algorithm
-% BFGS with backtracking line search
+% Newton's method with backtracking line search
 method.name =  'Newton';
 method.options.step_type = 'Backtracking';      
 
@@ -52,4 +52,4 @@ options.max_iterations = 1e3;
 % needed)
 
 [x1,f] = optSolver_CHL(problem,method,options);
-disp('Done!')
+%disp('Done!')
