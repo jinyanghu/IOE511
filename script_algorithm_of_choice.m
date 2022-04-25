@@ -29,7 +29,7 @@ problem.n = length(problem.x0);
 
 % final choice of algorithm
 % BFGS with backtracking line search
-method.name =  'BFGS';
+method.name =  'Newton';
 method.options.step_type = 'Backtracking';      
 
 
